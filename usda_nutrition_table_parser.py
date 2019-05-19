@@ -1,8 +1,11 @@
 import csv
 import sqlite3
 
-print('''USDA_Nutrition Table Parser\nNutrients.csv 
-should be located in the raw data folder\n** must run product_table_parser.py first ** ''')
+print('''
+USDA_Nutrition Table Parser 
+Nutrients.csv should be located in the raw data folder
+** must run product_table_parser.py first ** 
+''')
 
 if input("Ready to go? (y/n) ").lower() != "y":
     print("well this was fun...")
@@ -52,7 +55,7 @@ def read_file(file_path):
         return open(file_path)
     except FileNotFoundError:
         print("%s is an invalid file path" % file_path)
-        # quit()
+        quit()
 
 
 with read_file(file_paths[0]) as csv_file:
@@ -71,7 +74,7 @@ with read_file(file_paths[0]) as csv_file:
 
         # units
         cur.execute('INSERT OR IGNORE INTO Units (unit) VALUES (?)', (uom,))
-        cur.execute('SELECT uom_id from Units WHERE unit=? LIMIT 1', (uom,))
+        cur.execute('SELECT uom_id FROM Units WHERE unit=? LIMIT 1', (uom,))
         uom_id = cur.fetchone()[0]
 
         # derivation
