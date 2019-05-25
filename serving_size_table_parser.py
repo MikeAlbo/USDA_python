@@ -16,12 +16,17 @@ cur = db_connection.cursor()
 
 # todo: move these to a function that is called by and input argument
 cur.execute('DROP TABLE IF EXISTS Serving_sizes')
+cur.execute('DROP TABLE IF EXISTS Household_uom')
 
 cur.executescript('''
     CREATE TABLE IF NOT EXISTS Serving_sizes (
         serving_size_id INTEGER PRIMARY KEY, product_id INTEGER, 
         serving_size INTEGER, serving_size_uom INTEGER,
         household_serving_size INTEGER, household_serving_size_uom INTEGER 
+    );
+    
+    CREATE TABLE IF NOT EXISTS Household_uom (
+        household_uom_id INTEGER PRIMARY KEY, unit TEXT UNIQUE
     );
 ''')
 
@@ -64,8 +69,8 @@ with read_file(file_paths[0]) as csv_file:
             continue
 
         # household_serving_size_uom
-        cur.execute('INSERT OR IGNORE INTO Units (unit) Values (?)', (household_serving_size_uom,))
-        cur.execute('SELECT uom_id FROM Units WHERE unit=? LIMIT 1', (household_serving_size_uom,))
+        cur.execute('INSERT OR IGNORE INTO Household_uom (unit) Values (?)', (household_serving_size_uom,))
+        cur.execute('SELECT household_uom_id FROM Household_uom WHERE unit=? LIMIT 1', (household_serving_size_uom,))
         try:
             household_serving_size_uom_id = cur.fetchone()[0]
         except TypeError:
@@ -79,7 +84,7 @@ with read_file(file_paths[0]) as csv_file:
             product_id = cur.fetchone()[0]
         except TypeError:
             rows_not_added += 1
-            print("product_id failed")
+            print("rows_not added: ", rows_not_added)
             continue
 
         cur.execute('''
@@ -89,6 +94,7 @@ with read_file(file_paths[0]) as csv_file:
         ''', (product_id, serving_size, serving_size_uom_id, household_serving_size, household_serving_size_uom_id))
 
         count += 1
+        print("added: ", count)
         if count % 20 == 0:
             db_connection.commit()
 
