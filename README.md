@@ -1,10 +1,14 @@
 # USDA CSV TO SQLITE PARSERS
 
-[USDA data source](https://ndb.nal.usda.gov/ndb/)
+**Instructions**
+---
+1. Download the CSV files from [USDA data source](https://ndb.nal.usda.gov/ndb/)
+2. save the files (Products.csv, Nutrients.csv, Serving_size.csv) in **../raw_data/**
+3. Run the USDA_data_parser file (currently separate files, run usda_product_table... first)
+4. Run cross_check_data.py *takes about an hour*
+5. use usda_db_query to perform searches 
 
-csv should be saved in ../raw_data/
-
-must run usda_products_table_parser.py first
+**must run usda_products_table_parser.py first**
 
 ## SQLite DB version w/o API access
 The first version will store the products with non-matching data in the Nutrients and Serving Size tables
@@ -16,9 +20,6 @@ exist in the DB. Therefore we can remove the second products table from the DB r
 
 
 ## things left to add
-* indexing for UPC, National Product ID, and Long Name
-* possible SQLite syntax refinement to reduce file size and access speed
-* lookup functions/ program to act as console user interface
 * refinement of user flow for parsing data
 * arguments to be added to parser and lookup scripts - delete tables, readme
 * combining all parsers into on script
