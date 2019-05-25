@@ -96,6 +96,8 @@ try:
     db_connection = sqlite3.connect('file:../db/USDA2.sqlite?mode=rw', uri=True)
 except sqlite3.Error:
     print("USDA.sqlite does not exist in ../db/ folder")
+    print("Make sure to have run the data parsers first on the downloaded csv files")
+    quit()
 
 cur = db_connection.cursor()
 
