@@ -35,7 +35,7 @@ def create_tables(db_cur):
             derivation_id INTEGER PRIMARY KEY, derivation_code TEXT UNIQUE
             );
     
-            CREATE TABLE IF NOT EXISTS NutrientCodes(
+            CREATE TABLE IF NOT EXISTS Nutrient_codes(
             nutrient_code INTEGER PRIMARY KEY, nutrient_name TEXT UNIQUE
             );
             

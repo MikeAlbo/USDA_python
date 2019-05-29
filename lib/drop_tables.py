@@ -18,7 +18,7 @@ def drop_all_tables(db_cur):
             DROP TABLE IF EXISTS Nutrients;
             DROP TABLE IF EXISTS Units;
             DROP TABLE IF EXISTS Derivation;
-            DROP TABLE IF EXISTS NutrientCodes;
+            DROP TABLE IF EXISTS Nutrient_codes;
             DROP TABLE IF EXISTS Serving_sizes;
             DROP TABLE IF EXISTS Household_uom;
             DROP TABLE IF EXISTS Long_names;
