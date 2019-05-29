@@ -49,5 +49,5 @@ def create_tables(db_cur):
             household_uom_id INTEGER PRIMARY KEY, unit TEXT UNIQUE
             );
             ''')
-    except sqlite3.Error:
-        print("Error creating")
+    except sqlite3.Error as e:
+        print("Error creating tables", e.args[0])

@@ -5,8 +5,8 @@ def drop_table(db_cur, table):
     try:
         db_cur.execute('DROP TABLE IF EXISTS %s' % table)
         print(table, "removed")
-    except sqlite3.Error:
-        print("Error dropping table: %s" % table)
+    except sqlite3.Error as e:
+        print("Error dropping table: %s" % table, e.args[0])
 
 
 def drop_all_tables(db_cur):
@@ -24,7 +24,6 @@ def drop_all_tables(db_cur):
             DROP TABLE IF EXISTS Long_names;
             ''')
         print("all tables removed")
-    except sqlite3.Error:
+    except sqlite3.Error as e:
         print("Error dropping tables")
-        print(sqlite3.Error.with_traceback())
-
+        print(e.args[0])
