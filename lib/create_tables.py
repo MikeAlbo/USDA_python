@@ -48,6 +48,13 @@ def create_tables(db_cur):
             CREATE TABLE IF NOT EXISTS Household_uom (
             household_uom_id INTEGER PRIMARY KEY, unit TEXT UNIQUE
             );
+            
+            CREATE TABLE IF NOT EXISTS Parsers_ran (
+            parser_id INTEGER PRIMARY KEY, 
+            product_parser INTEGER, 
+            nutrition_parser INTEGER, 
+            serving_parser INTEGER
+            );
             ''')
     except sqlite3.Error as e:
         print("Error creating tables", e.args[0])
