@@ -9,7 +9,8 @@ import lib.user_input as user_input
 from lib.create_tables import create_tables
 from lib.drop_tables import drop_all_tables
 from lib.product_table_parser import main as prod_parser
-from lib.nutrition_table_parser import main as nutr_parser
+from lib.nutrition_table_parser import main as nutrient_parser
+from lib.serving_table_parser import main as serving_parser
 
 
 source_path = "../raw_data"
@@ -47,10 +48,19 @@ if user_input_parse_type == "full" or user_input_parse_type == "nutrient_parser"
     if p_parser_ran is False:
         print("product parser needs to run first")
         quit()
-    nutr_parser(source_path + "/Nutrients.csv", cur, db_connection)
+    nutrient_parser(source_path + "/Nutrients.csv", cur, db_connection)
     n_parser_ran = True
     current_time = time.process_time() - start_time
     print("\n____________________\n Nutrients parse time %.1f ms \n" % (current_time * 1000))
+
+if user_input_parse_type == "full" or user_input_parse_type == "serving_parse":
+    if p_parser_ran is False:
+        print("product parser needs to run first")
+        quit()
+    serving_parser(source_path + "/Serving_size.csv", cur, db_connection)
+    s_parser_ran = True
+    current_time = time.process_time() - start_time
+    print("\n____________________\n Serving size parse time %.1f ms \n" % (current_time * 1000))
 
 cur.close()
 
