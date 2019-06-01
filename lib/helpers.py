@@ -88,3 +88,13 @@ def read_csv(csv_file):
     except csv.Error:
         print(csv.Error)
         quit()
+
+
+def db_name_suffix(name):
+    """ensure that the db name provided ends in the .sqlite format"""
+    return name if str(name).endswith(".sqlite") else name + ".sqlite"
+
+
+def path_suffix(path):
+    """ensure that the path provided ends with an '/' to create a proper dir"""
+    return path if str(path).endswith("/") else path + "/"
