@@ -28,14 +28,14 @@ class DbProvider:
         ensure_db(path + db_name)  # ensures that the db_name provided exist/ creates file
 
         self._db_path = path + db_name
-        self.make_connection()
-        self.set_cursor()
+        self._make_connection()
+        self._set_cursor()
 
     def get_db_path(self):
         """returns the relative path to the database from the current working directory"""
         return self._db_path
 
-    def make_connection(self):
+    def _make_connection(self):
         """makes a connection to the sqlite database"""
         try:
             self.connection = sqlite3.connect(self.get_db_path())
@@ -43,14 +43,18 @@ class DbProvider:
         except sqlite3.Error as e:  # todo: convert to static method
             self._append_log(('ERROR: make_connection', e.args[0]))
 
-    def set_cursor(self):
+    def _set_cursor(self):
         """set the database cursor"""
         self.cursor = self.connection.cursor()
 
     def close_connection(self):
         """close the database connection, auto commits any remaining data"""
-        self.commit()
-        self.cursor.close()
+        try:
+            self.commit()
+            self.cursor.close()
+            self._append_log(("Connection closed",))
+        except self._sql_error() as e:
+            self._append_log(("close connection error: ", e.args[0]))
 
     def commit(self):
         """commits to the database"""
@@ -71,7 +75,7 @@ class DbProvider:
             for table in tables:
                 self.cursor.execute(table)
             self._append_log("tables created")
-        except self.sql_error() as e:
+        except self._sql_error() as e:
             self._append_log(e)
             self.view_log()
 
@@ -90,7 +94,7 @@ class DbProvider:
         try:
             self.cursor.execute(sql, params)
             self._append_log(("SQL Execute successful:", sql, params))
-        except self.sql_error() as e:
+        except self._sql_error() as e:
             self._append_log(e)
             self.view_log()
 
@@ -115,7 +119,7 @@ class DbProvider:
             self.view_log()
 
     @staticmethod
-    def sql_error():
+    def _sql_error():
         return sqlite3.Error.args[0]
 
 
