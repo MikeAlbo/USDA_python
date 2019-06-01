@@ -56,5 +56,7 @@ def create_tables(db_cur):
             serving_parser INTEGER
             );
             ''')
+
+        print("Create Tables Complete!")
     except sqlite3.Error as e:
         print("Error creating tables", e.args[0])

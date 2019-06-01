@@ -22,7 +22,7 @@ def drop_all_tables(db_cur):
             DROP TABLE IF EXISTS Serving_sizes;
             DROP TABLE IF EXISTS Household_uom;
             DROP TABLE IF EXISTS Long_names;
-            DROP TABLE IF EXISTS Parsers_ran
+            DROP TABLE IF EXISTS Parsers_ran;
             ''')
         print("all tables removed")
     except sqlite3.Error as e:
