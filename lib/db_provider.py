@@ -18,8 +18,12 @@ class DbProvider:
 
     def __init__(self, path, db_name):
 
-        path = path_suffix(path)
-        db_name = db_name_suffix(db_name)
+        """ensure names and paths are correct,
+        set the full db_path,
+        make the db connection and provide the cursor"""
+
+        path = path_suffix(path)  # ensure that the path provided is correctly formatted
+        db_name = db_name_suffix(db_name)  # ensure that the name provided contains .sqlite
         ensure_dir(path)  # ensure that the path exist on the user's directory
         ensure_db(path + db_name)  # ensures that the db_name provided exist/ creates file
 
@@ -35,50 +39,91 @@ class DbProvider:
         """makes a connection to the sqlite database"""
         try:
             self.connection = sqlite3.connect(self.get_db_path())
-            self.append_log("connection made")
-        except sqlite3.Error as e:
-            self.append_log(('ERROR: make_connection', e.args[0]))
+            self._append_log("connection made")
+        except sqlite3.Error as e:  # todo: convert to static method
+            self._append_log(('ERROR: make_connection', e.args[0]))
 
     def set_cursor(self):
+        """set the database cursor"""
         self.cursor = self.connection.cursor()
 
     def close_connection(self):
+        """close the database connection, auto commits any remaining data"""
+        self.commit()
         self.cursor.close()
 
     def commit(self):
+        """commits to the database"""
         self.connection.commit()
 
-    def append_log(self, message):
+    def _append_log(self, message):
+        """append dbProvider messages to the log"""
         self._db_log.append(message)
 
     def view_log(self):
+        """view the current entries in the db_log"""
         for m in self._db_log:
             print(m)
 
-    def create_tables(self):
+    def create_tables(self, tables):
+        """creates tables from an array of strings containing SQL code"""
         try:
-            for table in get_create_table_list():
+            for table in tables:
                 self.cursor.execute(table)
-            self.append_log("tables created")
-        except sqlite3.Error as e:
-            self.append_log(e.args[0])
+            self._append_log("tables created")
+        except self.sql_error() as e:
+            self._append_log(e)
             self.view_log()
 
-    def drop_tables(self):
+    def drop_tables(self, tables):
+        """drops ALL tables provided by an array of strings containing SQL code"""
         try:
-            for table in get_drop_table_list():
+            for table in tables:
                 self.cursor.execute(table)
-            self.append_log("all tables dropped")
+            self._append_log("all tables dropped")
         except sqlite3.Error as e:
-            self.append_log(e.args[0])
+            self._append_log(e.args[0])
             self.view_log()
+
+    def execute_sql(self, sql, params):
+        """take in the appropriate SQL code and params as a tuple for a single execution"""
+        try:
+            self.cursor.execute(sql, params)
+            self._append_log(("SQL Execute successful:", sql, params))
+        except self.sql_error() as e:
+            self._append_log(e)
+            self.view_log()
+
+    def fetch_one(self):
+        """preforms the cursor.fetch_one function and returns an error upon TypeError"""
+        try:
+            f = self.cursor.fetchone()[0]
+            self._append_log(("SQL fetch_one successful:",))
+            return f
+        except TypeError:
+            self._append_log(("SQL fetch_one Error:",))
+            self.view_log()
+
+    def fetch_many(self):
+        """preforms the cursor.fetch_many function and returns an error upon TypeError"""
+        try:
+            f = self.cursor.fetchall()
+            self._append_log(("SQL fetch_many successful:",))
+            return f
+        except TypeError:
+            self._append_log(("SQL fetch_many Error:",))
+            self.view_log()
+
+    @staticmethod
+    def sql_error():
+        return sqlite3.Error.args[0]
 
 
 #  test!! ===================
 
 new_db = DbProvider("../../demo_db", "demo1")
 print(new_db.get_db_path())
-new_db.drop_tables()
-new_db.create_tables()
+new_db.drop_tables(get_drop_table_list())
+new_db.create_tables(get_create_table_list())
 new_db.close_connection()
 new_db.view_log()
