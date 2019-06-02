@@ -1,13 +1,10 @@
 
-# initialize the db with the db name and path
-# create a cursor
 # create errors log, write logs to disk
 
-
 import sqlite3
-from os_provider import ensure_db, ensure_dir
-from helpers import db_name_suffix, path_suffix
-from db_tables import get_drop_table_list, get_create_table_list
+from helpers.os_provider import ensure_db, ensure_dir
+from helpers.helpers import db_name_suffix, path_suffix
+from sql.db_tables import get_drop_table_list, get_create_table_list
 
 
 class DbProvider:
@@ -16,18 +13,11 @@ class DbProvider:
     cursor = None
     _db_log = list()
 
-    def __init__(self, path, db_name):
+    def __init__(self, full_path):
 
-        """ensure names and paths are correct,
-        set the full db_path,
-        make the db connection and provide the cursor"""
+        """set the full db_path, make the db connection and provide the cursor"""
 
-        path = path_suffix(path)  # ensure that the path provided is correctly formatted
-        db_name = db_name_suffix(db_name)  # ensure that the name provided contains .sqlite
-        ensure_dir(path)  # ensure that the path exist on the user's directory
-        ensure_db(path + db_name)  # ensures that the db_name provided exist/ creates file
-
-        self._db_path = path + db_name
+        self._db_path = full_path
         self._make_connection()
         self._set_cursor()
 
@@ -108,7 +98,7 @@ class DbProvider:
             self._append_log(("SQL fetch_one Error:",))
             self.view_log()
 
-    def fetch_many(self):
+    def fetch_all(self):
         """preforms the cursor.fetch_many function and returns an error upon TypeError"""
         try:
             f = self.cursor.fetchall()

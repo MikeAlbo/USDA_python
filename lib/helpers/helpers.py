@@ -12,19 +12,19 @@ def help_options():
     quit()
 
 
-def ensure_dir(file_path):
+def ensure_dir(file_path):  # todo: remove - moved to os provider
     directory = os.path.dirname(file_path)
     if not os.path.exists(directory):
         os.makedirs(directory)
 
 
-def ensure_db(file_name):
+def ensure_db(file_name): # todo: remove - moved to os provider
     if not os.path.exists(file_name):
         f = open(file_name, 'w')
         f.close()
 
 
-def check_files_exist(dir_path):
+def check_files_exist(dir_path):  # todo: remove - moved to os provider
     try:
         _ = os.path.isfile("%s/Products.csv" % dir_path)
         _ = os.path.isfile("%s/Nutrients.csv" % dir_path)
@@ -35,7 +35,7 @@ def check_files_exist(dir_path):
         quit()
 
 
-def make_db_connection(dir_path, db_name):
+def make_db_connection(dir_path, db_name): # todo: remove - remade in dbProvider
     try:
         ensure_dir(dir_path)
         full_path = dir_path + db_name
@@ -47,21 +47,21 @@ def make_db_connection(dir_path, db_name):
         quit()
 
 
-def init_parser_complete_table(cursor, db_connection):
+def init_parser_complete_table(cursor, db_connection):  # todo: remove - moved to usda_db
     cursor.execute('''INSERT OR IGNORE INTO Parsers_ran 
     (product_parser, nutrition_parser, serving_parser) 
     VALUES (?, ?, ?)''', (0, 0, 0))
     db_connection.commit()
 
 
-def parser_ran_complete(cursor, db_connection, parser):
+def parser_ran_complete(cursor, db_connection, parser):  # todo: remove - moved to usda_db
     cursor.execute('''UPDATE Parsers_ran SET 
     "{}"=? 
     WHERE parser_id =?'''.format(parser), (1, 1))
     db_connection.commit()
 
 
-def completed_parsers(cursor):
+def completed_parsers(cursor):  # todo: remove - moved to usda_db
     try:
         cursor.execute("Select * FROM Parsers_ran WHERE parser_id=?", (1,))
         fetched = cursor.fetchall()[0]

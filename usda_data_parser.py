@@ -1,16 +1,12 @@
-import csv
-import sqlite3
 import time
-import os
-import sys
 
-import lib.helpers as helpers
-import lib.user_input as user_input
+import helpers.helpers as helpers
+import helpers.user_input as user_input
 from lib.create_tables import create_tables
-from lib.drop_tables import drop_all_tables
-from lib.product_table_parser import main as prod_parser
-from lib.nutrition_table_parser import main as nutrient_parser
-from lib.serving_table_parser import main as serving_parser
+from drop_tables import drop_all_tables
+from parsers.product_table_parser import main as prod_parser
+from parsers.nutrition_table_parser import main as nutrient_parser
+from parsers.serving_table_parser import main as serving_parser
 
 
 source_path = "../raw_data"

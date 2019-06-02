@@ -1,6 +1,6 @@
 def main(file_path, cursor, db_connection):
     import sqlite3
-    from lib.helpers import read_file, read_csv
+    from helpers.helpers import read_file, read_csv
 
     count = 0
     first_line = True
