@@ -1,6 +1,6 @@
-def main(file_path, cursor, db_connection):
-    import sqlite3
-    from helpers.helpers import read_file, read_csv
+def main(file_path):
+    from lib.helpers.helpers import read_file, read_csv
+    from lib.sql.usda_db import usda_db
 
     count = 0
     first_line = True
@@ -23,54 +23,38 @@ def main(file_path, cursor, db_connection):
             uom = row[5]
 
             # units
-            try:
-                cursor.execute('INSERT OR IGNORE INTO Units (unit) VALUES (?)', (uom,))
-                cursor.execute('SELECT uom_id FROM Units WHERE unit=? LIMIT 1', (uom,))
-                uom_id = cursor.fetchone()[0]
-            except sqlite3.Error as e:
-                print("Insert error into units", e.args[0])
-                errors += 1
+            usda_db.db.execute_sql('''INSERT OR IGNORE INTO Units (unit) VALUES (?)''', (uom,))
+            uom_id = usda_db.sel_rtn_id('''SELECT uom_id FROM Units WHERE unit=? LIMIT 1''', (uom,))
 
             # derivation
-            try:
-                cursor.execute('INSERT OR IGNORE INTO Derivation (derivation_code) VALUES (?)', (derivation,))
-                cursor.execute('SELECT derivation_id FROM Derivation WHERE derivation_code=? LIMIT 1', (derivation,))
-                derivation_id = cursor.fetchone()[0]
-            except sqlite3.Error as e:
-                print("Insert error into Derivation", e.args[0])
-                errors += 1
+            usda_db.db.execute_sql('INSERT OR IGNORE INTO Derivation (derivation_code) VALUES (?)', (derivation,) )
+            derivation_id = usda_db.sel_rtn_id('''SELECT derivation_id 
+            FROM Derivation WHERE derivation_code=? LIMIT 1''', (derivation,))
 
             # nutrientCode
-            try:
-                cursor.execute('INSERT OR IGNORE INTO Nutrient_codes (nutrient_code, nutrient_name) VALUES (?, ?)',
-                               (nutrient_code, nutrient_name))
-            except sqlite3.Error as e:
-                print("Insert error into Nutrient_codes", e.args[0])
-                errors += 1
+            usda_db.db.execute_sql('''INSERT OR IGNORE INTO 
+            Nutrient_codes (nutrient_code, nutrient_name) 
+            VALUES (?, ?)''', (nutrient_code, nutrient_name))
 
             # product_id
-            cursor.execute('SELECT product_id FROM Products WHERE ndb_number=? LIMIT 1', (nbd,))
             try:
-                product_id = cursor.fetchone()[0]
+                product_id = usda_db.sel_rtn_id('''SELECT product_id 
+                FROM Products WHERE ndb_number=? LIMIT 1''', (nbd,))
             except TypeError:
                 rows_not_added += 1
+                print("row not added")
                 continue
 
-            try:
-                cursor.execute('''INSERT OR IGNORE INTO Nutrients 
-                                                (product_id, nutrient_code, uom_id, derivation_id, output_value)
-                                                VALUES (?, ?, ?, ?, ?)''',
-                            (product_id, nutrient_code, uom_id, derivation_id, output_val))
-            except sqlite3.Error as e:
-                print("Insert error into Nutrients", e.args[0])
-                errors += 1
+            usda_db.db.execute_sql('''INSERT OR IGNORE INTO Nutrients 
+            (product_id, nutrient_code, uom_id, derivation_id, output_value)
+            VALUES (?, ?, ?, ?, ?)''', (product_id, nutrient_code, uom_id, derivation_id, output_val))
 
             count += 1
             if count % 20 == 0:
-                db_connection.commit()
+                usda_db.db.commit()
                 print(count)
 
-        db_connection.commit()
+        usda_db.db.commit()
         print("\n______________________")
         print("DONE LOADING NUTRIENTS")
         print(count, "Rows Parsed")

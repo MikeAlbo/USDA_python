@@ -22,15 +22,15 @@ def main(file_path):
             ingredients = row[7]
 
             usda_db.db.execute_sql('INSERT OR IGNORE INTO Manufactures (manufacture_name) VALUES (?)', (manufacture,))
-            manufacture_id = usda_db.select_return_id('''SELECT manufacture_id 
+            manufacture_id = usda_db.sel_rtn_id('''SELECT manufacture_id 
             FROM Manufactures WHERE manufacture_name=? LIMIT 1''', (manufacture,))
 
             usda_db.db.execute_sql('''INSERT OR IGNORE INTO Ingredients (ingredients) VALUES (?)''', (ingredients,))
-            ingredient_id = usda_db.select_return_id('''SELECT ingredient_id 
+            ingredient_id = usda_db.sel_rtn_id('''SELECT ingredient_id 
             FROM Ingredients WHERE ingredients=? LIMIT 1''', (ingredients,))
 
             usda_db.db.execute_sql('''INSERT OR IGNORE INTO Long_names (long_name) VALUES (?)''', (long_name,))
-            long_name_id = usda_db.select_return_id('''SELECT long_name_id 
+            long_name_id = usda_db.sel_rtn_id('''SELECT long_name_id 
             FROM Long_names WHERE long_name=? LIMIT 1''', (long_name,))
 
             try:

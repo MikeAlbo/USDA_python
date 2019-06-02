@@ -15,7 +15,7 @@ class UsdaDb:
         full_path = path + db_name
         ensure_db(full_path)
         self.db = DbProvider(full_path)
-        self.drop_all_usda_tables()  # todo: remove
+        # self.drop_all_usda_tables()  # todo: remove
         self.create_usda_tables()
         self.init_parser_complete_table()
 
@@ -74,9 +74,13 @@ class UsdaDb:
         except ValueError as v:
             print(v)
 
-    def select_return_id(self, sql, params):
+    def sel_rtn_id(self, sql, params):
         self.db.execute_sql(sql, params)
         return self.db.fetch_one()
+
+    def sel_rtn_row(self, sql):
+        self.db.execute_sql(sql, ())
+        return self.db.fetch_all()
 
     @staticmethod
     def db_running():
@@ -85,5 +89,5 @@ class UsdaDb:
     def errors(self):
         return self.db.sql_errors()
 
-usda_db = UsdaDb()
 
+usda_db = UsdaDb()

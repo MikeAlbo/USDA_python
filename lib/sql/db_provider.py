@@ -64,7 +64,7 @@ class DbProvider:
             self._append_log("tables created")
         except self._sql_provider_error() as e:
             self._append_log(e)
-            self.view_log()
+            # self.view_log()
 
     def drop_tables(self, tables):
         """drops ALL tables provided by an array of strings containing SQL code"""
@@ -74,16 +74,16 @@ class DbProvider:
             self._append_log("all tables dropped")
         except sqlite3.Error as e:
             self._append_log(e.args[0])
-            self.view_log()
+            # self.view_log()
 
     def execute_sql(self, sql, params):
         """take in the appropriate SQL code and params as a tuple for a single execution"""
         try:
             self.cursor.execute(sql, params)
             self._append_log(("SQL Execute successful:", sql, params))
-        except self._sql_provider_error() as e:
+        except sqlite3.Error as e:
             self._append_log(e)
-            self.view_log()
+            # self.view_log()
 
     def fetch_one(self):
         """preforms the cursor.fetch_one function and returns an error upon TypeError"""
@@ -93,7 +93,7 @@ class DbProvider:
             return f
         except TypeError:
             self._append_log(("SQL fetch_one Error:",))
-            self.view_log()
+            # self.view_log()
 
     def fetch_all(self):
         """preforms the cursor.fetch_many function and returns an error upon TypeError"""
@@ -103,7 +103,7 @@ class DbProvider:
             return f
         except TypeError:
             self._append_log(("SQL fetch_many Error:",))
-            self.view_log()
+            # self.view_log()
 
     @staticmethod
     def _sql_provider_error():
@@ -113,11 +113,4 @@ class DbProvider:
     def sql_errors():
         return sqlite3.Error.args[0]
 
-#  test!! ===================
 
-# new_db = DbProvider("../../demo_db", "demo1")
-# print(new_db.get_db_path())
-# new_db.drop_tables(get_drop_table_list())
-# new_db.create_tables(get_create_table_list())
-# new_db.close_connection()
-# new_db.view_log()
