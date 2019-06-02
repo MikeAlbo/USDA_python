@@ -1,6 +1,6 @@
 # USDA CSV TO SQLITE PARSERS
 
-***usda_db_query is currently not functioning do to structural changes in several tables***
+<span style="color:red">some *usda_db_query is currently not functioning do to structural changes in several tables* text</span>
 
 The current source files for this project are deprecated but are still available. The information within the files should still be accurate but it is not recent. The tables are matched using the **NDB_number** provided in each file. There are rows in both the Serving_size.csv and Nutrients.csv file that do not exist in the Products.csv and vice versa, the parsers and cleanup scripts should resolve all discrepancies. The **future version with API access** should resolve all DB missing data issues.
 
