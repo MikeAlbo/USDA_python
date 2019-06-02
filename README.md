@@ -27,3 +27,7 @@ exist in the DB. Therefore we can remove the second products table from the DB r
 * USDA API integration
 * fix/ refactor usda_db_query.py
 * add option to drop tables/ single table
+* add prompt to use existing db, delete db, new db 
+* CREATE time class and use it to log parse times, print logs
+* CREATE error class, capture and log errors, print logs
+* change parser complete value to false when table is dropped

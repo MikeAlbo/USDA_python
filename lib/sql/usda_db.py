@@ -15,7 +15,7 @@ class UsdaDb:
         full_path = path + db_name
         ensure_db(full_path)
         self.db = DbProvider(full_path)
-        # self.drop_all_usda_tables()  # todo: remove
+        self.drop_all_usda_tables()  # todo: remove
         self.create_usda_tables()
         self.init_parser_complete_table()
 
