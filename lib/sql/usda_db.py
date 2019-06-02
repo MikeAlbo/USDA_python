@@ -1,14 +1,19 @@
-from sql.db_tables import get_drop_table_list, get_create_table_list
-from sql.db_provider import DbProvider
-from helpers.os_provider import ensure_db,ensure_dir
+from lib.sql.db_tables import get_drop_table_list, get_create_table_list
+from lib.sql.db_provider import DbProvider
+from lib.helpers.os_provider import ensure_db, ensure_dir
+import lib.helpers.helpers as helpers
 
 
 class UsdaDb:
 
-    def __init__(self, path, db_name):
-        path = ensure_dir(path)
-        db_name = ensure_db(path + db_name)
+    db = None
+
+    def init_usda_db(self, path, db_name):
+        path = helpers.path_suffix(path)
+        db_name = helpers.db_name_suffix(db_name)
+        ensure_dir(path)
         full_path = path + db_name
+        ensure_db(full_path)
         self.db = DbProvider(full_path)
         self.drop_all_usda_tables()  # todo: remove
         self.create_usda_tables()
@@ -25,6 +30,7 @@ class UsdaDb:
 
         self.db.execute_sql(sql, params)
         self.db.commit()
+        print("parser_complete_table  created!")
 
     def parser_ran_complete(self, parser):
         sql = '''UPDATE Parsers_ran SET "{}"=? 
@@ -52,9 +58,11 @@ class UsdaDb:
 
     def create_usda_tables(self):
         self.db.create_tables(get_create_table_list())
+        print("USDA tables created")
 
     def drop_all_usda_tables(self):
         self.db.drop_tables(get_drop_table_list())
+        print("USDA tables dropped")
 
     def drop_single_usda_table(self, table_name):
         try:
@@ -66,6 +74,10 @@ class UsdaDb:
         except ValueError as v:
             print(v)
 
+    @staticmethod
+    def db_running():
+        print("DB is running")
 
 
+usda_db = UsdaDb()
 

@@ -2,9 +2,6 @@
 # create errors log, write logs to disk
 
 import sqlite3
-from helpers.os_provider import ensure_db, ensure_dir
-from helpers.helpers import db_name_suffix, path_suffix
-from sql.db_tables import get_drop_table_list, get_create_table_list
 
 
 class DbProvider:
@@ -115,9 +112,9 @@ class DbProvider:
 
 #  test!! ===================
 
-new_db = DbProvider("../../demo_db", "demo1")
-print(new_db.get_db_path())
-new_db.drop_tables(get_drop_table_list())
-new_db.create_tables(get_create_table_list())
-new_db.close_connection()
-new_db.view_log()
+# new_db = DbProvider("../../demo_db", "demo1")
+# print(new_db.get_db_path())
+# new_db.drop_tables(get_drop_table_list())
+# new_db.create_tables(get_create_table_list())
+# new_db.close_connection()
+# new_db.view_log()
