@@ -40,7 +40,7 @@ class DbProvider:
             self.commit()
             self.cursor.close()
             self._append_log(("Connection closed",))
-        except self._sql_error() as e:
+        except self._sql_provider_error() as e:
             self._append_log(("close connection error: ", e.args[0]))
 
     def commit(self):
@@ -62,7 +62,7 @@ class DbProvider:
             for table in tables:
                 self.cursor.execute(table)
             self._append_log("tables created")
-        except self._sql_error() as e:
+        except self._sql_provider_error() as e:
             self._append_log(e)
             self.view_log()
 
@@ -81,7 +81,7 @@ class DbProvider:
         try:
             self.cursor.execute(sql, params)
             self._append_log(("SQL Execute successful:", sql, params))
-        except self._sql_error() as e:
+        except self._sql_provider_error() as e:
             self._append_log(e)
             self.view_log()
 
@@ -106,9 +106,12 @@ class DbProvider:
             self.view_log()
 
     @staticmethod
-    def _sql_error():
+    def _sql_provider_error():
         return sqlite3.Error.args[0]
 
+    @staticmethod
+    def sql_errors():
+        return sqlite3.Error.args[0]
 
 #  test!! ===================
 

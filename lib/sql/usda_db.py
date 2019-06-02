@@ -74,10 +74,16 @@ class UsdaDb:
         except ValueError as v:
             print(v)
 
+    def select_return_id(self, sql, params):
+        self.db.execute_sql(sql, params)
+        return self.db.fetch_one()
+
     @staticmethod
     def db_running():
         print("DB is running")
 
+    def errors(self):
+        return self.db.sql_errors()
 
 usda_db = UsdaDb()
 

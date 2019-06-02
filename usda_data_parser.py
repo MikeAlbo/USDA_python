@@ -23,13 +23,12 @@ user_input_parse_type = user_input.user_select_parse_type(possible_search_option
 
 usda_db.init_usda_db(db_path, db_name)
 usda_db.db_running()
-quit()
 
-# if user_input_parse_type == "full" or user_input_parse_type == "product_parse":
-#     prod_parser(source_path + "/Products.csv", cur, db_connection)
-#     helpers.parser_ran_complete(cur, db_connection, "product_parser")
-#     current_time = time.process_time() - start_time
-#     print("\n____________________\n Products parse time %.1f ms \n" % (current_time * 1000))
+if user_input_parse_type == "full" or user_input_parse_type == "product_parse":
+    prod_parser(source_path + "/Products.csv")
+    usda_db.parser_ran_complete("product_parser")
+    current_time = time.process_time() - start_time
+    print("\n____________________\n Products parse time %.1f ms \n" % (current_time * 1000))
 #
 # if user_input_parse_type == "full" or user_input_parse_type == "nutrient_parse":
 #     if helpers.completed_parsers(cur)["p_p"] is False:
@@ -49,9 +48,9 @@ quit()
 #     current_time = time.process_time() - start_time
 #     print("\n____________________\n Serving size parse time %.1f ms \n" % (current_time * 1000))
 #
-# # print("user input:", user_input_parse_type)
-# # print(helpers.completed_parsers(cur))
-# cur.close()
+print("user input:", user_input_parse_type)
+print(usda_db.completed_parsers())
+usda_db.db.close_connection()
 
 
 
