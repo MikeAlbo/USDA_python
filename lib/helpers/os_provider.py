@@ -19,6 +19,6 @@ def check_files_exist(dir_path):
         _ = os.path.isfile("%s/Nutrients.csv" % dir_path)
         _ = os.path.isfile("%s/Serving_size.csv" % dir_path)
         print("files found...")
-    except TypeError:
+    except OSError:
         print("Files Not found in ../raw_data dir")
         quit()

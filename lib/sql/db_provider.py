@@ -9,6 +9,7 @@ class DbProvider:
     connection = None
     cursor = None
     _db_log = list()
+    error = sqlite3.Error  # looking to see if this works
 
     def __init__(self, full_path):
 
@@ -26,7 +27,8 @@ class DbProvider:
         """makes a connection to the sqlite database"""
         try:
             self.connection = sqlite3.connect(self.get_db_path())
-            self._append_log("connection made")
+            # self._append_log("connection made")
+            print("connection made:", self.get_db_path())
         except sqlite3.Error as e:  # todo: convert to static method
             self._append_log(('ERROR: make_connection', e.args[0]))
 
