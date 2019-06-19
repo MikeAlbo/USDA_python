@@ -4,7 +4,7 @@ def get_create_table_list():
     return [
         ''' CREATE TABLE IF NOT EXISTS Products (
             product_id INTEGER PRIMARY KEY, ndb_number INTEGER UNIQUE, long_name INTEGER,
-            gtin_upc INTEGER UNIQUE, manufacture_id INTEGER, ingredients_id INTEGER
+            gtin_upc_id INTEGER UNIQUE, manufacture_id INTEGER, ingredients_id INTEGER
             )''',
         '''CREATE TABLE IF NOT EXISTS Manufactures (
             manufacture_id INTEGER PRIMARY KEY, manufacture_name TEXT UNIQUE
@@ -14,6 +14,9 @@ def get_create_table_list():
             )''',
         '''CREATE TABLE IF NOT EXISTS Ingredients (
             ingredient_id INTEGER PRIMARY KEY, ingredients TEXT UNIQUE
+            )''',
+        '''CREATE TABLE IF NOT EXISTS Gtin_upcs (
+            gtin_upc_id INTEGER PRIMARY KEY, gtin_upc TEXT UNIQUE
             )''',
         '''CREATE TABLE IF NOT EXISTS Nutrients (
             product_nutrient_id INTEGER PRIMARY KEY, product_id INTEGER, nutrient_code INTEGER, 
@@ -57,5 +60,6 @@ def get_drop_table_list():
         '''DROP TABLE IF EXISTS Serving_sizes''',
         '''DROP TABLE IF EXISTS Household_uom''',
         '''DROP TABLE IF EXISTS Long_names''',
+        '''DROP TABLE IF EXISTS Gtin_upcs''',
         '''DROP TABLE IF EXISTS Parsers_ran'''
     ]

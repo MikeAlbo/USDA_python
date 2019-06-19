@@ -31,7 +31,7 @@ usda_db.db_running()
 if user_input_parse_type == "full" or user_input_parse_type == "product_parse":
     prod_parser(source_path + "/Products.csv")
     usda_db.parser_ran_complete("product_parser")
-    current_time = time.process_time() - start_time
+    current_time = time.process_time() - start_time  # todo: fix time, create class
     print("\n____________________\n Products parse time %.1f ms \n" % (current_time * 1000))
 
 if user_input_parse_type == "full" or user_input_parse_type == "nutrient_parse":
