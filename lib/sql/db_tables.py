@@ -16,7 +16,7 @@ def get_create_table_list():
             ingredient_id INTEGER PRIMARY KEY, ingredients TEXT UNIQUE
             )''',
         '''CREATE TABLE IF NOT EXISTS Gtin_upcs (
-            gtin_upc_id INTEGER PRIMARY KEY, gtin_upc TEXT UNIQUE
+            gtin_upc_id INTEGER PRIMARY KEY, gtin_upc INTEGER UNIQUE
             )''',
         '''CREATE TABLE IF NOT EXISTS Nutrients (
             product_nutrient_id INTEGER PRIMARY KEY, product_id INTEGER, nutrient_code INTEGER, 

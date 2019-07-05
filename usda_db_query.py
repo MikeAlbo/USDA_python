@@ -13,17 +13,44 @@ def print_product(prod):
     print("Ingredients: \n %s" % prod[5])
 
 
-def get_product(upc, search_type):
-    cur.execute('''
-    SELECT 
-        product_id, ndb_number,long_name,gtin_upc, 
-        Manufactures.manufacture_name, 
-        ingredients.ingredients 
-        FROM Products 
-        INNER JOIN Manufactures on  Manufactures.manufacture_id = Products.manufacture_id
-        INNER JOIN ingredients on ingredients.ingredient_id = Products.ingredients_id
-        WHERE %s=?
-        ''' % search_type, (upc,))
+def get_value_id(value, search_type):
+    if search_type == "ndb_number":
+        return value
+
+    switcher = {
+        "gtin_upc_id": ("Gtin_upcs", "gtin_upc_id", "gtin_upc"),
+        "long_name": ("Long_names", "long_name_id", "long_name"),
+    }
+    table = switcher.get(search_type, "Invalid entry")
+
+    cur.execute('''SELECT {id} From {table} Where {value}=?'''
+                .format(id=table[1], table=table[0], value=table[2]), (value,))
+    return cur.fetchone()[0]
+
+
+def get_product(value, search_type):
+    """ todo: select the upc id from the Gtin_upc table, then use that id to lookup the product"""
+
+    val = get_value_id(value, search_type)
+
+    try:
+        cur.execute('''
+            SELECT 
+                product_id, ndb_number,
+                Long_names.long_name,
+                Gtin_upcs.gtin_upc,
+                Manufactures.manufacture_name, 
+                ingredients.ingredients 
+                FROM Products 
+                INNER JOIN Manufactures on  Manufactures.manufacture_id = Products.manufacture_id
+                INNER JOIN ingredients on ingredients.ingredient_id = Products.ingredients_id
+                INNER JOIN Long_names on Long_names.long_name_id = Products.long_name
+                INNER JOIN Gtin_upcs on Gtin_upcs.gtin_upc_id = Products.gtin_upc_id
+                WHERE Products.%s=?
+                ''' % search_type, (val,))
+    except sqlite3 as e:
+        print(e)
+
     p = cur.fetchone()
     print_product(p)
     return p[0]
@@ -62,12 +89,12 @@ def print_nutrients(nutrients):
 def get_nutrition(p_id):
     cur.execute('''
     SELECT 
-        NutrientCodes.nutrient_name,
+        Nutrient_codes.nutrient_name,
         output_value, 
         Units.unit,
         Derivation.derivation_code
         FROM Nutrients 
-        INNER JOIN NutrientCodes on  NutrientCodes.nutrient_code = Nutrients.nutrient_code
+        INNER JOIN Nutrient_codes on  Nutrient_codes.nutrient_code = Nutrients.nutrient_code
         INNER JOIN Units on  Units.uom_id = Nutrients.uom_id
         INNER JOIN Derivation on Derivation.derivation_id = Nutrients.derivation_id
         WHERE product_id=?
@@ -92,8 +119,9 @@ except ValueError:
 
 db_connection = None
 
+# todo: db name should be able to change
 try:
-    db_connection = sqlite3.connect('file:../db/USDA2.sqlite?mode=rw', uri=True)
+    db_connection = sqlite3.connect('file:../db/USDA_test.sqlite?mode=rw', uri=True)
 except sqlite3.Error:
     print("USDA.sqlite does not exist in ../db/ folder")
     print("Make sure to have run the data parsers first on the downloaded csv files")
@@ -105,7 +133,7 @@ cur = db_connection.cursor()
 try:
     user_input = input("Enter %s: " % user_input_search_type)
     if user_input_search_type == "upc":
-        user_input_search_type = "gtin_upc"
+        user_input_search_type = "gtin_upc_id"
     if user_input_search_type != "long_name":
         user_input = int(user_input)
 except ValueError:

@@ -33,10 +33,15 @@ def main(file_path):
             long_name_id = usda_db.sel_rtn_id('''SELECT long_name_id 
             FROM Long_names WHERE long_name=? LIMIT 1''', (long_name,))
 
+            usda_db.db.execute_sql('''INSERT OR IGNORE INTO Gtin_upcs (gtin_upc) VALUES (?)''', (gtin_upc,))
+            gtin_upc_id = usda_db.sel_rtn_id('''SELECT gtin_upc_id 
+            FROM GTIN_upcs WHERE gtin_upc=? LIMIT 1''', (gtin_upc,))
+
+
             try:
                 usda_db.db.execute_sql('''INSERT INTO Products 
-                (ndb_number, long_name, gtin_upc, manufacture_id, ingredients_id)
-                VALUES (?, ?, ?, ?, ?)''', (ndb_number, long_name_id, gtin_upc, manufacture_id, ingredient_id))
+                (ndb_number, long_name, gtin_upc_id, manufacture_id, ingredients_id)
+                VALUES (?, ?, ?, ?, ?)''', (ndb_number, long_name_id, gtin_upc_id, manufacture_id, ingredient_id))
             except:
                 errors += 1
                 print("error!")
