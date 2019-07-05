@@ -1,13 +1,10 @@
 # USDA CSV TO SQLITE PARSERS
 The current source files for this project are deprecated but are still available. The information within the files should still be accurate but it is not recent. The tables are matched using the **NDB_number** provided in each file. There are rows in both the Serving_size.csv and Nutrients.csv file that do not exist in the Products.csv and vice versa, the parsers and cleanup scripts should resolve all discrepancies. The **future version with API access** should resolve all DB missing data issues.
 
-## usda_db_query is currently not functioning do to structural changes in several tables
-do to changes in the structure of several tables, the join lookups are no longer functioning
 
 to add:
 * partial lookup for product name (return multiple results)
 * multiple return values for upc lookup ( will need to add new table for upc, will fix  insert errors)
-* fix: long name column to join with new Long_names table
 * add query as search into main application  
 
 
@@ -32,8 +29,7 @@ exist in the DB. Therefore we can remove the second products table from the DB r
 ## things left to add
 
 * USDA API integration
-* fix/ refactor usda_db_query.py
-* add option to drop tables/ single table
+* add option to drop tables/ single tables
 * add prompt to use existing db, delete db, new db 
 * CREATE time class and use it to log parse times, print logs
 * CREATE error class, capture and log errors, print logs
